@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <script type=text/javascript src="{{url_for('static', filename='jquery.js') }}"></script>
+    <style>
+        body {
+            background-image: url("static/bgk.jpg");
+        }
+
+        .box {
+            position: absolute;
+            top: 45%;
+            left: 45%;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="box">
+    <div id="from" style="display: none">
+        <input type="text" id="username" placeholder="请输入姓名"><br>
+        <input type="password" id="userpass" placeholder="请输入学号"><br>
+        <button id="login">login</button>
+    </div>
+
+</div>
+
+
+</body>
+<script>
+
+    $(document).ready(function () {
+        console.log("heoo")
+        $("#from").show()
+
+        $("#login").click(function () {
+            $.ajax({
+                url: "/login",
+                type: "post",
+                data: JSON.stringify(
+                    {
+                        'user': $("#username").val(),
+                        'pass': $("#userpass").val()
+                    }),
+                contentType: 'application/json; charset=UTF-8',
+                success: function (res) {
+                    console.log(res)
+                    if (res.url != undefined) {
+                        window.location.href = res.url;
+                    }
+
+                },
+                error: function (res) {
+                    console.log(res);
+                    console.log(1)
+                }
+            });
+        });
+    })
+
+    //键盘监听
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) {
+            $("#login").click();
+        }
+    });
+
+</script>
+
+</html>

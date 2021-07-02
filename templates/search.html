@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>搜索</title>
+    <script type=text/javascript src="{{url_for('static', filename='jquery.js') }}"></script>
+    <style>
+        body {
+            background-size: cover;
+            background-image: url("static/bgk2.jpg");
+        }
+        .kty {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+<div style="text-align: center;margin: 0 auto;" class="kty">
+
+
+    <p>欢迎你
+        <t style="color:blue">{{name}}</t>
+    </p>
+    <br>
+
+    <textarea id="question" style="height: 40px;width: 450px">placeholder="输入要搜索的题目"</textarea>
+    <br>
+    <button id="sendtext">Send  或 敲回车键</button>
+    <br><br>
+    <textarea id="ans" style="height: 200px;width: 450px"></textarea>
+
+    <br>
+    您的ip:<p style="display: inline-block;width: 110px;color: blue" id="ip">{{ip}}</p>
+    搜索次数:<p style="display: inline-block;width: 40px;color: blue" id="count">{{count}}</p>
+
+    最多允许：<p style="display: inline-block;width: 10px;color: blue">{{max_search}}</p>
+    <br>
+    下载题库：<a href="/download">下载</a><br>
+
+    <br>© <span class="copyright">ucc</span> <br>
+
+    <span>Powered by flask</span>
+</div>
+</body>
+<script>
+
+    function send_server() {
+        $.ajax({
+            url: "/souti",
+            type: "post",
+            data: JSON.stringify({'questext': $("#question").val()}),
+            contentType: 'application/json; charset=UTF-8',
+            success: function (res) {
+                $("#ans").val(res.anstext)
+                $("#ip").text(res.ipco[0])
+                $("#count").text(res.ipco[1])
+                // console.log(res)
+            },
+            error: function (res) {
+                console.log(res);
+                console.log(1)
+            }
+        });
+    }
+
+
+    //点击输入框清空输入框内容
+    $("#question").click(
+        function () {
+            $("#question").val("")
+        }
+    )
+
+    //点击send按钮
+    $("#sendtext").click(function () {
+        send_server();
+    });
+    //键盘监听
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) {
+            send_server();
+        }
+    });
+</script>
+</html>
