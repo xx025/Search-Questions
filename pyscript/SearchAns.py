@@ -1,11 +1,12 @@
 import jieba
 
 from pyscript.Question import question
+import Levenshtein
 
 jieba.initialize()  # 初始化
 
 
-class wordCoverage:
+class base_cover:
     # 通过分词后词组的覆盖率对比
     coverage = None
     str1_list = ""
@@ -20,13 +21,25 @@ class wordCoverage:
 
     def cover(self):
         num = 0
-        for i in self.str1_list:
-            if i in self.str2:
-                num += 1
         if self.str_qes in self.str2:
             k = 1
             return k
-        return num / len(self.str1_list)
+        else:
+            for i in self.str1_list:
+                if i in self.str2:
+                    num += 1
+            return num / len(self.str1_list)
+
+
+class base_leven():
+    distance = 9999
+    str2 = ""
+    str1 = ""
+
+    def __init__(self, str1, str2):
+        self.str1 = str1
+        self.str2 = str2
+        self.distance = Levenshtein.distance(str1, str2)
 
 
 class searchAns:
@@ -40,34 +53,30 @@ class searchAns:
         ques = str(ques)
         return ques.replace(" ", "").replace("\n", "").replace("\t", "")
 
-    # import Levenshtein
-    # def basedistance(self, ques_bank):
-    #     # 莱温斯坦距离也是一个很好的对比方法，但对于较短的句子可能不太合适
-    #     min_dis = 99999
-    #     for i in ques_bank:
-    #         distance = Levenshtein.distance(self.ques_str, i.get_ques_text())
-    #         if distance == 0:
-    #             self.best_match = i
-    #             break
-    #         elif distance < min_dis:
-    #             min_dis = distance
-    #             self.best_match = i
-    #         else:
-    #             pass
-    #     return self.best_match
-
-    def basecover(self, ques_bank):
-        # 在这种算法下，如果str1是一个适当的长度字符串那么返回结果很好
+    def get_ans(self, ques_bank):
         max_cover = 0
+        best_match_list = []  # 记录分词覆盖率相同的
         for i in ques_bank:
             split = list(jieba.cut(self.ques_str, cut_all=False))
-            cover = wordCoverage(str1_list=split, str2=i.get_ques_text(), str_qus=self.ques_str).coverage
+            cover = base_cover(str1_list=split, str2=i.get_ques_text(), str_qus=self.ques_str).coverage
             if cover == 1:
                 self.best_match = i
                 break
+            elif cover == max_cover:
+                best_match_list.append(i)
             elif cover >= max_cover:
                 self.best_match = i
                 max_cover = cover
-            else:
-                pass
+                best_match_list = []  # 清空基于分词覆盖相同覆盖率的列表
+        else:
+            min_dis = 99999
+            for k in best_match_list:
+                distance = base_leven(str1=self.ques_str, str2=i.get_ques_text()).distance
+                if distance == 0:
+                    self.best_match = k
+                elif distance <= min_dis:
+                    min_dis = distance
+                    self.best_match
+                else:
+                    pass
         return self.best_match

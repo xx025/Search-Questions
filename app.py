@@ -97,7 +97,7 @@ def query_ques():
     if login:
         if data[1] < max_search:
             c.add(session.get('username'))
-            ans = searchAns(student_json['questext']).basecover(ques_bank=qb)
+            ans = searchAns(student_json['questext']).get_ans(ques_bank=qb)
             c.behavior_log((request.remote_addr, user_name, '搜题', student_json['questext']))
             student_json["anstext"] = ans.get_self_str()
             student_json["ipco"] = (request.remote_addr,data[1])
