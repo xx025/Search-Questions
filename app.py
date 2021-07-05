@@ -1,5 +1,4 @@
 import json
-import sqlite3
 from random import random
 
 from flask import Flask, send_from_directory
@@ -34,6 +33,14 @@ def close_connection(exc):
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
+
+
+@app.route("/idtest", methods=['post', 'get'])
+def id_test():
+    c = db_con()
+    student = request.data.decode('utf-8')
+    student = json.loads(student)
+    return str(c.isacount(student['user'], student['pass']))
 
 
 @app.route("/download")
@@ -96,11 +103,12 @@ def query_ques():
     data = c.query(user=user_name)
     if login:
         if data[1] < max_search:
-            c.add(session.get('username'))
+            c.add(user=user_name)
             ans = searchAns(student_json['questext']).get_ans(ques_bank=qb)
             c.behavior_log((request.remote_addr, user_name, '搜题', student_json['questext']))
             student_json["anstext"] = ans.get_self_str()
-            student_json["ipco"] = (request.remote_addr,data[1])
+            student_json["ipco"] = (request.remote_addr, data[1])
+            student_json['max_search'] = max_search
             return jsonify(student_json)
         else:
             return jsonify({"anstext": "次数受限", "ipco": data})
@@ -117,7 +125,6 @@ def add_ques():
         return 'fail'
     else:
         return add_ques()
-
 
 
 if __name__ == '__main__':
