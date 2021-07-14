@@ -40,4 +40,4 @@ class question:
         ques = ""
         for i in self.options:
             ques += i["optionContent"]
-        return self.questionText + ques +"\n answer:" +self.solution +'\n analysis:'+ self.explainAns
+        return self.questionText + ques + "\n answer:" + self.solution + '\n analysis:' + self.explainAns

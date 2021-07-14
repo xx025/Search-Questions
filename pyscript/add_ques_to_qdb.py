@@ -6,7 +6,7 @@ from flask import request
 import setting
 
 
-def add_ques():
+def add_ques_dr():
     DATABASE = setting.setting.sqlite_db
     conn = sqlite3.connect(DATABASE)
     c = conn.cursor()

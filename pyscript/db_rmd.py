@@ -1,7 +1,6 @@
-
 # simply sqlite database remove duplicate
 
-#import sqlite3
+# import sqlite3
 
 # import setting
 #

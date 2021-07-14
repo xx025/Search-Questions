@@ -1,8 +1,11 @@
+import logging
+
+import Levenshtein
 import jieba
 
 from pyscript.Question import question
-import Levenshtein
 
+jieba.setLogLevel(logging.INFO)
 jieba.initialize()  # 初始化
 
 

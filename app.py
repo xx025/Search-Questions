@@ -2,14 +2,16 @@ import json
 from random import random
 
 from flask import Flask, send_from_directory
+from flask import current_app
 from flask import request, jsonify, render_template, redirect, url_for, session, g
 from flask_cors import CORS
+from gevent import pywsgi
 
 import setting
 from pyscript import QuestionBank
 from pyscript.SQLitesjdbc import db_con
 from pyscript.SearchAns import searchAns
-from pyscript.add_ques_to_qdb import add_ques
+from pyscript.add_ques_to_qdb import add_ques_dr
 
 app = Flask(__name__, static_folder=setting.setting.static_floder, template_folder=setting.setting.template_folder)
 app.secret_key = '^\x90\xcd-N\xc2:z\xee\xfckHOUjy\xe0\x83b\x12\x1f\xe3Wb' + str(random())
@@ -19,8 +21,6 @@ max_search = setting.setting.max_search
 
 qkn = QuestionBank.ques_bank()
 qb = qkn.get_ques_bank()
-
-from flask import current_app
 
 
 @app.route('/favicon.ico')
@@ -69,7 +69,7 @@ def login():
 def success():
     if session.get('username') is not None:
         c = db_con()
-        data = c.query(request.remote_addr)
+        data = c.query(session.get('username'))
         return render_template('search.html', ip=data[0], count=data[1], name=session.get('username'),
                                max_search=max_search)
     return redirect(url_for('login'))
@@ -124,9 +124,10 @@ def add_ques():
     if not request.data:  # 检测是否有数据
         return 'fail'
     else:
-        return add_ques()
+        return add_ques_dr()
 
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run(host='0.0.0.0', port=80)
+    server = pywsgi.WSGIServer(('0.0.0.0', 80), app)
+    print("[开启成功]")
+    server.serve_forever()
