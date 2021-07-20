@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>搜索</title>
     <script type=text/javascript src="{{url_for('static', filename='jquery.js') }}"></script>
+
     <style>
         body {
             background-size: cover;
@@ -30,6 +31,10 @@
     <br><br>
     <textarea id="ans" style="height: 200px;width: 450px"></textarea>
 
+    <br>
+    <button id="noback">删除背景</button>
+    <button onclick="window.open(location.href, '_blank', 'titlebar=0,menubar=0,location=0')">小窗打开
+    </button>
     <br>
     您的ip:<p style="display: inline-block;width: 110px;color: blue" id="ip">{{ip}}</p>
     搜索次数:<p style="display: inline-block;width: 40px;color: blue" id="count">{{count}}</p>
@@ -82,5 +87,22 @@
             send_server();
         }
     });
+
+    var onOff = 1;
+
+    $("#noback").click(
+        function () {
+            if (onOff == 1) {
+                $("#noback").text("显示背景")
+                $('body').css("background-image", "url()")
+                onOff = 0
+            } else {
+                $("#noback")
+                    ?.text("删除背景")
+                $('body').css("background-image", "url(\"static/bgk2.jpg\")")
+                onOff = 1
+            }
+        }
+    )
 </script>
 </html>

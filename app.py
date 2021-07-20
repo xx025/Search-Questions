@@ -14,7 +14,7 @@ from pyscript.SearchAns import searchAns
 from pyscript.add_ques_to_qdb import add_ques_dr
 
 app = Flask(__name__, static_folder=setting.setting.static_floder, template_folder=setting.setting.template_folder)
-app.secret_key = '^\x90\xcd-N\xc2:z\xee\xfckHOUjy\xe0\x83b\x12\x1f\xe3Wb' + str(random())
+app.secret_key = '^\x90\xcd-N\xc2:z\xee\xfckHOUjy\xe0\x83b\x12\x1f\xe3Wb'
 CORS(app, resources=r'/*')
 CORS(app, supports_credentials=True)
 max_search = setting.setting.max_search
